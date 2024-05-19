@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{042734fd-cdf9-4314-a5e7-f4d7874529a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Camera">
+      <UniqueIdentifier>{dc3fed23-1878-4acb-ac31-545df24ec4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utility">
+      <UniqueIdentifier>{5e7604a8-88de-4c49-a43e-736a1caec944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Processing">
+      <UniqueIdentifier>{8c77c233-d546-4dbc-841f-2c19d76d76f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utility">
+      <UniqueIdentifier>{f47416ab-ddec-4003-bcda-f84fecffb5b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Processing">
+      <UniqueIdentifier>{f4c19da7-4215-4141-91b4-3279a69eafe7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="reconstruction.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RealSenseCamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGenerator.cpp">
+      <Filter>소스 파일\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCloudProcessor.cpp">
+      <Filter>소스 파일\Processing</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>소스 파일\Utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RealSenseCamera.h">
+      <Filter>헤더 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>헤더 파일\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCloudProcessor.h">
+      <Filter>헤더 파일\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>헤더 파일\Utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

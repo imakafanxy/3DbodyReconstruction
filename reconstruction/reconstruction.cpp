@@ -1,11 +1,4 @@
-﻿// 메인 실행 파일, 프로세스 흐름 제어
-/* 기능:
-	- 각 모듈 초기화 및 설정
-	- 주요 처리 루프 구현
-	- 사용자 입력 처리 및 결과 표시
-	- 시스템 상태 모니터링 및 오류 처리
-*/
-#include "RealSenseCamera.h"
+﻿#include "RealSenseCamera.h"
 #include "PointCloudProcessor.h"
 #include <pcl/visualization/pcl_visualizer.h>
 #include <iostream>
@@ -30,7 +23,7 @@ int main() {
         viewer.initCameraParameters();
         viewer.registerKeyboardCallback(keyboardEventOccurred);
 
-        //좌표축
+        // 좌표축
         viewer.addCoordinateSystem(0.1);
 
         while (!viewer.wasStopped()) {
@@ -57,8 +50,13 @@ int main() {
             if (save_triggered) {
                 PointCloudProcessor::savePointCloud(cloud, "outputCloud.pcd");
                 auto filteredCloud = PointCloudProcessor::removeNoise(cloud);
-                PointCloudProcessor::savePointCloud(filteredCloud, "filteredOutputCloud.pcd");
-                std::cout << "Cloud saved and filtered!" << std::endl;
+                if (filteredCloud && !filteredCloud->empty()) {
+                    PointCloudProcessor::savePointCloud(filteredCloud, "filteredOutputCloud.pcd");
+                    std::cout << "Cloud saved and filtered!" << std::endl;
+                }
+                else {
+                    std::cerr << "Filtered cloud is empty!" << std::endl;
+                }
                 save_triggered = false;
             }
         }

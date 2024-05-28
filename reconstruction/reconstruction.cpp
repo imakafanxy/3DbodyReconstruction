@@ -23,7 +23,7 @@ int main() {
         viewer.initCameraParameters();
         viewer.registerKeyboardCallback(keyboardEventOccurred);
 
-        // 좌표축
+        //좌표축
         viewer.addCoordinateSystem(0.1);
 
         while (!viewer.wasStopped()) {
@@ -50,13 +50,8 @@ int main() {
             if (save_triggered) {
                 PointCloudProcessor::savePointCloud(cloud, "outputCloud.pcd");
                 auto filteredCloud = PointCloudProcessor::removeNoise(cloud);
-                if (filteredCloud && !filteredCloud->empty()) {
-                    PointCloudProcessor::savePointCloud(filteredCloud, "filteredOutputCloud.pcd");
-                    std::cout << "Cloud saved and filtered!" << std::endl;
-                }
-                else {
-                    std::cerr << "Filtered cloud is empty!" << std::endl;
-                }
+                PointCloudProcessor::savePointCloud(filteredCloud, "filteredOutputCloud.pcd");
+                std::cout << "Cloud saved and filtered!" << std::endl;
                 save_triggered = false;
             }
         }

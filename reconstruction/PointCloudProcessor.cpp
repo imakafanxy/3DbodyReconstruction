@@ -6,7 +6,9 @@
 #include <librealsense2/rsutil.h>
 #include <memory>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/filter.h>
 #include <iostream>
+#include <cmath> 
 
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(const rs2::depth_frame& depth, const rs2::video_frame& color) {
     auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
@@ -26,7 +28,7 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
             uint16_t depth_value = reinterpret_cast<const uint16_t*>(depth.get_data())[dy * depth_intrin.width + dx];
             float depth_in_meters = depth_value * 0.001f; // millimeters to meters
 
-            if (depth_value == 0 || isnan(depth_value) || depth_in_meters < 0.5f || depth_in_meters > 1.0f) {
+            if (depth_value == 0 || std::isnan(depth_in_meters) || depth_in_meters < 0.5f || depth_in_meters > 1.0f) {
                 continue;
             }
 
@@ -63,8 +65,12 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
 
     std::cerr << "Valid points in point cloud: " << valid_points << std::endl;
 
-    if (valid_points == 0) {
-        std::cerr << "No valid point cloud data available." << std::endl;
+    // NaN 값 필터링
+    std::vector<int> index;
+    pcl::removeNaNFromPointCloud(*cloud, *cloud, index);
+
+    if (cloud->empty()) {
+        std::cerr << "No data in point cloud to save." << std::endl;
         return nullptr; // 유효한 포인트 클라우드가 없으면 nullptr 반환
     }
 

@@ -16,26 +16,23 @@
     <Filter Include="소스 파일\Camera">
       <UniqueIdentifier>{042734fd-cdf9-4314-a5e7-f4d7874529a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Camera">
-      <UniqueIdentifier>{dc3fed23-1878-4acb-ac31-545df24ec4ea}</UniqueIdentifier>
+    <Filter Include="소스 파일\Processing">
+      <UniqueIdentifier>{8c77c233-d546-4dbc-841f-2c19d76d76f6}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Utility">
       <UniqueIdentifier>{5e7604a8-88de-4c49-a43e-736a1caec944}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Processing">
-      <UniqueIdentifier>{8c77c233-d546-4dbc-841f-2c19d76d76f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Utility">
-      <UniqueIdentifier>{f47416ab-ddec-4003-bcda-f84fecffb5b0}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Camera">
+      <UniqueIdentifier>{6f608a60-016e-4269-9fc7-e985e0dc6c44}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\Processing">
-      <UniqueIdentifier>{f4c19da7-4215-4141-91b4-3279a69eafe7}</UniqueIdentifier>
+      <UniqueIdentifier>{0040ae17-edef-4667-996f-dd2e28ab10b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Utility">
+      <UniqueIdentifier>{8b4e9584-bead-4a9b-b061-da9ea678ef1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="reconstruction.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="RealSenseCamera.cpp">
       <Filter>소스 파일\Camera</Filter>
     </ClCompile>
@@ -48,16 +45,19 @@
     <ClCompile Include="Utilities.cpp">
       <Filter>소스 파일\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="reconstruction.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RealSenseCamera.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="MeshGenerator.h">
       <Filter>헤더 파일\Processing</Filter>
     </ClInclude>
     <ClInclude Include="PointCloudProcessor.h">
       <Filter>헤더 파일\Processing</Filter>
+    </ClInclude>
+    <ClInclude Include="RealSenseCamera.h">
+      <Filter>헤더 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
       <Filter>헤더 파일\Utility</Filter>

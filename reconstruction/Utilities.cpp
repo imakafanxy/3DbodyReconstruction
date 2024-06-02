@@ -1,6 +1,12 @@
-// 일반적인 데이터 처리 및 변환 유틸리티 제공
-/* 기능:
-	- 데이터 변환 (예: 좌표 변환, 스케일링)
-	- 유틸리티 함수 (예: 벡터 계산, 행렬 연산 등)
-	- 로깅 및 디버깅 도우미 함수
-*/
+#include "Utilities.h"
+#include <pcl/filters/filter.h>
+#include <librealsense2/rsutil.h>
+
+void Utilities::removeNaNFromPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
+    std::vector<int> index;
+    pcl::removeNaNFromPointCloud(*cloud, *cloud, index);
+}
+
+void Utilities::deprojectPixelToPoint(float point[3], const rs2_intrinsics* intrin, const float pixel[2], float depth) {
+    rs2_deproject_pixel_to_point(point, intrin, pixel, depth);
+}

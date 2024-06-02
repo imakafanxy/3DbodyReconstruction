@@ -3,14 +3,29 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <iostream>
 #include <mutex>
+#include <thread>
+#include <atomic>
+#include <filesystem>
 
 std::mutex viewer_mutex;
 bool save_triggered = false;
+std::atomic<int> file_index(1);
 
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void* nothing) {
     if (event.getKeySym() == "s" && event.keyDown()) {
         save_triggered = true;
     }
+}
+
+void savePointCloudToFile(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
+    if (!cloud) {
+        std::cerr << "Error: Null pointer passed to savePointCloudToFile." << std::endl;
+        return;
+    }
+
+    int index = file_index++;
+    std::string filename = "outputCloud_" + std::to_string(index) + ".pcd";
+    PointCloudProcessor::savePointCloud(cloud, filename);
 }
 
 int main() {
@@ -23,18 +38,17 @@ int main() {
         viewer.initCameraParameters();
         viewer.registerKeyboardCallback(keyboardEventOccurred);
 
-        //좌표축
         viewer.addCoordinateSystem(0.1);
 
         while (!viewer.wasStopped()) {
             viewer.spinOnce(100);
             std::lock_guard<std::mutex> lock(viewer_mutex);
 
-            auto frames = camera.getFrames(); // Get frames from the camera
+            auto frames = camera.getFrames();
             if (!frames) continue;
 
-            auto depth = frames.get_depth_frame(); // Get the depth frame
-            auto color = frames.get_color_frame(); // Get the color frame
+            auto depth = frames.get_depth_frame();
+            auto color = frames.get_color_frame();
 
             if (!depth || !color) continue;
 
@@ -48,10 +62,8 @@ int main() {
             viewer.addPointCloud<pcl::PointXYZRGB>(cloud, "Sample Cloud");
 
             if (save_triggered) {
-                PointCloudProcessor::savePointCloud(cloud, "outputCloud.pcd");
-                auto filteredCloud = PointCloudProcessor::removeNoise(cloud);
-                PointCloudProcessor::savePointCloud(filteredCloud, "filteredOutputCloud.pcd");
-                std::cout << "Cloud saved and filtered!" << std::endl;
+                std::thread saveThread(savePointCloudToFile, cloud);
+                saveThread.detach();
                 save_triggered = false;
             }
         }

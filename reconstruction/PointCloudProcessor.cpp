@@ -7,8 +7,12 @@
 #include <memory>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/filter.h>
+#include <pcl/io/pcd_io.h>
 #include <iostream>
-#include <cmath> 
+#include <cmath>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(const rs2::depth_frame& depth, const rs2::video_frame& color) {
     auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
@@ -65,22 +69,47 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
 
     std::cerr << "Valid points in point cloud: " << valid_points << std::endl;
 
-    // NaN 값 필터링
     std::vector<int> index;
     pcl::removeNaNFromPointCloud(*cloud, *cloud, index);
 
     if (cloud->empty()) {
         std::cerr << "No data in point cloud to save." << std::endl;
-        return nullptr; // 유효한 포인트 클라우드가 없으면 nullptr 반환
+        return nullptr;
     }
 
     return cloud;
 }
 
+void PointCloudProcessor::savePointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud, const std::string& filename) {
+    if (!cloud) {
+        std::cerr << "Null pointer passed to savePointCloud." << std::endl;
+        return;
+    }
+
+    try {
+        fs::path pcd_directory = "saved_pcd";
+        if (!fs::exists(pcd_directory)) {
+            fs::create_directory(pcd_directory);
+        }
+
+        fs::path file_path = pcd_directory / filename;
+
+        if (pcl::io::savePCDFileASCII(file_path.string(), *cloud) == -1) {
+            std::cerr << "Failed to save PCD file: " << file_path.string() << std::endl;
+        }
+        else {
+            std::cout << "PCD file saved: " << file_path.string() << std::endl;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Exception while saving PCD file: " << e.what() << std::endl;
+    }
+}
+
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::removeNoise(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
     if (cloud->empty()) {
         std::cerr << "No data in point cloud to filter." << std::endl;
-        return cloud; // 빈 클라우드 반환
+        return cloud;
     }
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZRGB>);

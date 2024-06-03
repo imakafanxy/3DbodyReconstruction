@@ -5,7 +5,6 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
-#include <filesystem>
 
 std::mutex viewer_mutex;
 bool save_triggered = false;
@@ -17,15 +16,12 @@ void keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event, void*
     }
 }
 
-void savePointCloudToFile(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
-    if (!cloud) {
-        std::cerr << "Error: Null pointer passed to savePointCloudToFile." << std::endl;
-        return;
-    }
-
+void savePointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
     int index = file_index++;
-    std::string filename = "outputCloud_" + std::to_string(index) + ".pcd";
-    PointCloudProcessor::savePointCloud(cloud, filename);
+    std::string output_filename = "outputCloud_" + std::to_string(index) + ".pcd";
+
+    PointCloudProcessor::savePointCloud(cloud, output_filename);
+    std::cout << "Cloud saved as " << output_filename << "!" << std::endl;
 }
 
 int main() {
@@ -38,17 +34,18 @@ int main() {
         viewer.initCameraParameters();
         viewer.registerKeyboardCallback(keyboardEventOccurred);
 
+        // 좌표축
         viewer.addCoordinateSystem(0.1);
 
         while (!viewer.wasStopped()) {
             viewer.spinOnce(100);
             std::lock_guard<std::mutex> lock(viewer_mutex);
 
-            auto frames = camera.getFrames();
+            auto frames = camera.getFrames(); // Get frames from the camera
             if (!frames) continue;
 
-            auto depth = frames.get_depth_frame();
-            auto color = frames.get_color_frame();
+            auto depth = frames.get_depth_frame(); // Get the depth frame
+            auto color = frames.get_color_frame(); // Get the color frame
 
             if (!depth || !color) continue;
 
@@ -62,7 +59,7 @@ int main() {
             viewer.addPointCloud<pcl::PointXYZRGB>(cloud, "Sample Cloud");
 
             if (save_triggered) {
-                std::thread saveThread(savePointCloudToFile, cloud);
+                std::thread saveThread(savePointCloud, cloud);
                 saveThread.detach();
                 save_triggered = false;
             }

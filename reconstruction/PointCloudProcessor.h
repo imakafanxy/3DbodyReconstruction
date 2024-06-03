@@ -1,9 +1,9 @@
-#ifndef POINT_CLOUD_PROCESSOR_H
-#define POINT_CLOUD_PROCESSOR_H
+#pragma once
 
-#include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <librealsense2/rs.hpp>
+#include <pcl/io/pcd_io.h>
 
 class PointCloudProcessor {
 public:
@@ -11,5 +11,3 @@ public:
     static void savePointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud, const std::string& filename);
     static pcl::PointCloud<pcl::PointXYZRGB>::Ptr removeNoise(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud);
 };
-
-#endif // POINT_CLOUD_PROCESSOR_H

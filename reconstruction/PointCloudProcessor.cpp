@@ -7,7 +7,6 @@
 #include <memory>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/filter.h>
-#include <pcl/io/pcd_io.h>
 #include <iostream>
 #include <cmath>
 #include <filesystem>
@@ -32,7 +31,7 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
             uint16_t depth_value = reinterpret_cast<const uint16_t*>(depth.get_data())[dy * depth_intrin.width + dx];
             float depth_in_meters = depth_value * 0.001f; // millimeters to meters
 
-            if (depth_value == 0 || std::isnan(depth_in_meters) || depth_in_meters < 0.5f || depth_in_meters > 1.0f) {
+            if (depth_value == 0 || std::isnan(depth_in_meters) || depth_in_meters > 1.0f) { // 1 meter 이내만 허용
                 continue;
             }
 
@@ -67,8 +66,9 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
         }
     }
 
-    std::cerr << "Valid points in point cloud: " << valid_points << std::endl;
 
+
+    // NaN 값 필터링
     std::vector<int> index;
     pcl::removeNaNFromPointCloud(*cloud, *cloud, index);
 
@@ -81,20 +81,17 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::convertToPointCloud(
 }
 
 void PointCloudProcessor::savePointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud, const std::string& filename) {
-    if (!cloud) {
-        std::cerr << "Null pointer passed to savePointCloud." << std::endl;
-        return;
-    }
-
     try {
+        // pcd 디렉토리 생성
         fs::path pcd_directory = "saved_pcd";
         if (!fs::exists(pcd_directory)) {
             fs::create_directory(pcd_directory);
         }
 
+        // 파일 저장 경로 설정
         fs::path file_path = pcd_directory / filename;
 
-        if (pcl::io::savePCDFileASCII(file_path.string(), *cloud) == -1) {
+        if (pcl::io::savePCDFileBinary(file_path.string(), *cloud) == -1) {
             std::cerr << "Failed to save PCD file: " << file_path.string() << std::endl;
         }
         else {
@@ -109,7 +106,7 @@ void PointCloudProcessor::savePointCloud(const pcl::PointCloud<pcl::PointXYZRGB>
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudProcessor::removeNoise(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& cloud) {
     if (cloud->empty()) {
         std::cerr << "No data in point cloud to filter." << std::endl;
-        return cloud;
+        return cloud; // 빈 클라우드 반환
     }
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZRGB>);
